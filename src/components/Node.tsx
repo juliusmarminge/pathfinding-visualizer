@@ -4,19 +4,19 @@ import type { NodeObject } from "./PathfindingVisualizer";
 export const Node: React.FC<{
   node: NodeObject;
   onMouseEnter?: () => void;
-  onMouseDown?: () => void;
+  onMouseDown?: (e: React.MouseEvent) => void;
 }> = ({ node, onMouseEnter, onMouseDown }) => {
-  let classNames = "w-6 aspect-square border-2 border-primary/50 ";
+  let classNames = "w-10 aspect-square border-2 border-zinc-700 transition ";
   if (node.isStart) {
-    classNames += "bg-success";
+    classNames += "bg-lime-600 duration-75";
   } else if (node.isTarget) {
-    classNames += "bg-error";
+    classNames += "bg-red-500 duration-75";
   } else if (node.isWall) {
-    classNames += "bg-gray-700";
+    classNames += "bg-zinc-200 duration-300";
   } else if (node.isShortestPath) {
-    classNames += "bg-green-500";
+    classNames += "bg-primary duration-500";
   } else if (node.isVisited) {
-    classNames += "bg-gray-300";
+    classNames += "bg-amber-200 duration-500";
   }
 
   if (!onMouseEnter || !onMouseDown) {
@@ -27,7 +27,7 @@ export const Node: React.FC<{
     <div
       className={classNames}
       onMouseEnter={() => onMouseEnter!()}
-      onMouseDown={() => onMouseDown!()}
+      onMouseDown={(e: React.MouseEvent) => onMouseDown!(e)}
     />
   );
 };

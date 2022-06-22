@@ -84,7 +84,8 @@ export const App = () => {
     });
   };
 
-  const handleMouseDown = (row: number, col: number) => {
+  const handleMouseDown = (e: React.MouseEvent, row: number, col: number) => {
+    if (e.button !== 0) return; // only left click
     setIsMouseDown(true);
     const node = grid[row][col];
     if (node.isStart) {
@@ -177,7 +178,9 @@ export const App = () => {
                       key={`r${rowIndex}c${colIndex}`}
                       node={node}
                       onMouseEnter={() => handleMouseEnter(node.row, node.col)}
-                      onMouseDown={() => handleMouseDown(node.row, node.col)}
+                      onMouseDown={(e: React.MouseEvent) =>
+                        handleMouseDown(e, node.row, node.col)
+                      }
                     />
                   );
                 })}
