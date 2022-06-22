@@ -28,6 +28,7 @@ export const App = () => {
   const [start, setStart] = useState(config.startPos);
   const [target, setTarget] = useState(config.targetPos);
 
+  const [isShifted, setIsShifted] = useState(false);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [startNodeSelected, setStartNodeSelected] = useState(false);
   const [targetNodeSelected, setTargetNodeSelected] = useState(false);
@@ -52,7 +53,6 @@ export const App = () => {
     }
     visitsInOrder.forEach((node, i) => {
       if (i === visitsInOrder.length - 1) {
-        console.log("animating path in ", speed * i);
         setTimeout(() => animatePath(path), speed * i);
         return;
       }
@@ -98,7 +98,7 @@ export const App = () => {
     } else {
       setStartNodeSelected(false);
       setTargetNodeSelected(false);
-      setGrid((prev) => updateWalls(prev, [row, col]));
+      setGrid((prev) => updateWalls(prev, [row, col], isShifted));
     }
   };
 
@@ -113,18 +113,35 @@ export const App = () => {
       );
       setTarget([row, col]);
     } else {
-      setGrid((prev) => updateWalls(prev, [row, col]));
+      setGrid((prev) => updateWalls(prev, [row, col], isShifted));
     }
   };
 
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
+    setStartNodeSelected(false);
+    setTargetNodeSelected(false);
+  };
+
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === "Shift") {
+      setIsShifted(true);
+    }
+  };
+
+  const handleKeyup = () => {
+    setIsShifted(false);
+  };
+
   React.useEffect(() => {
-    const handleMouseUp = () => {
-      setIsMouseDown(false);
-      setStartNodeSelected(false);
-      setTargetNodeSelected(false);
-    };
     document.addEventListener("mouseup", handleMouseUp);
-    return () => document.removeEventListener("mouseup", handleMouseUp);
+    document.addEventListener("keydown", handleKeydown);
+    document.addEventListener("keyup", handleKeyup);
+    return () => {
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("keydown", handleKeydown);
+      document.removeEventListener("keyup", handleKeyup);
+    };
   }, []);
 
   return (
@@ -140,7 +157,7 @@ export const App = () => {
         <Symbols />
         <p>
           Click and Drag to place walls. Selecting start- or targetnode will
-          move that node.
+          move that node. Hold shift to remove walls.
         </p>
         {noShortestPath && (
           <p className="text-red-400">

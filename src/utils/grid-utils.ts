@@ -57,11 +57,12 @@ export const resetVisited = (grid: NodeObject[][]) => {
 
 export const updateWalls = (
   oldGrid: NodeObject[][],
-  newPos: [number, number]
+  newPos: [number, number],
+  isShifted: boolean
 ) => {
   const newNode = {
     ...oldGrid[newPos[0]][newPos[1]],
-    isWall: true,
+    isWall: isShifted ? false : true,
   };
 
   const newGrid = [...oldGrid];
